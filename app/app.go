@@ -15,6 +15,7 @@ import (
 
 var loggedUser string
 
+// Funcionamento completo do App de notas
 func App() {
 	var choice int
 
