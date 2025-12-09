@@ -149,7 +149,7 @@ func _createNote() {
 	fmt.Println("---- CRIAÇÃO DE NOTA ----")
 
 	fmt.Println("Digite o titulo da sua nota: ")
-	fmt.Scanln(&noteTitle)
+	fmt.Scan(&noteTitle)
 
 	fmt.Println("Digite o texto da sua nota: ")
 	noteContent, _ = reader.ReadString('\n')
@@ -203,8 +203,5 @@ func _notesViewer() {
 		fmt.Println("Erro ao carregar nota:", err)
 		return
 	}
-	fmt.Println("----- NOTA -----")
-	fmt.Println("Título:", n.NoteTitle)
-	fmt.Println("Conteúdo:")
-	fmt.Println(n.NoteContent)
+	n.DisplayNote()
 }

@@ -1,6 +1,7 @@
 package note
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -21,4 +22,12 @@ func NewNote(user, nt, nc string) Note {
 		NoteContent:   nc,
 		NoteCreatedAt: ct,
 	}
+}
+
+func (note Note) DisplayNote() {
+	noteDTitle := fmt.Sprintf("Nota: %s", note.NoteTitle)
+	noteDContent := fmt.Sprintf("Conteúdo: %s", note.NoteContent)
+	userNcreater := fmt.Sprintf("Criada por: %s", note.User)
+
+	fmt.Print(noteDTitle, "\n", noteDContent, "\n", userNcreater, "\n")
 }
