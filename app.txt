@@ -1,7 +1,0 @@
-será um app que o usuário utilizará para fazer anotações
-
-
-o aplicativo deve guardar o dado em memória em um json
-
-
-1. criação de usuário
