@@ -29,5 +29,7 @@ func (note Note) DisplayNote() {
 	noteDContent := fmt.Sprintf("Conteúdo: %s\n", note.NoteContent)
 	userNcreater := fmt.Sprintf("Criada por: %s\n", note.User)
 
+	fmt.Println("*****************************************************")
 	fmt.Print(noteDTitle, "\n", noteDContent, "\n", userNcreater, "\n")
+	fmt.Println("*****************************************************")
 }
