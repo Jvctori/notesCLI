@@ -7,7 +7,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Usuário
 type User struct {
+	// Ou seja tags alteram o funcionamento de funcs
+	// ... que trabalham com estruturas de dados
 	Login        string    `json:"user"`
 	HashPassword string    `json:"hash"`
 	CreatedAt    time.Time `json:"created_at"`
@@ -27,7 +30,7 @@ func New(userLogin, userPassword string) User {
 	}
 }
 
-// Hasd password genereator
+// Hash password genereator
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	if err != nil {
@@ -36,6 +39,7 @@ func HashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
+// Validate password with hash
 func CheckPassword(hash, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
