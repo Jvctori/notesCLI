@@ -6,10 +6,10 @@ import (
 )
 
 type Note struct {
-	User          string    `json:"User"`
-	NoteTitle     string    `json:"noteTitle"`
-	NoteContent   string    `json:"NoteContent"`
-	NoteCreatedAt time.Time `json:"NoteCreatedAt"`
+	User          string    `json:"user"`
+	NoteTitle     string    `json:"note_title"`
+	NoteContent   string    `json:"note_content"`
+	NoteCreatedAt time.Time `json:"note_createdAt"`
 }
 
 // Create new Note

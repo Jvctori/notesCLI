@@ -10,7 +10,7 @@ import (
 type User struct {
 	Login     string    `json:"user"`
 	Password  string    `json:"hash"`
-	CreatedAt time.Time `json:"CreatedAt"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 // Create new User
