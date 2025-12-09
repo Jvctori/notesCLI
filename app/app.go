@@ -149,7 +149,7 @@ func _createNote() {
 	fmt.Println("---- CRIAÇÃO DE NOTA ----")
 
 	fmt.Println("Digite o titulo da sua nota: ")
-	fmt.Scan(&noteTitle)
+	fmt.Scanln(&noteTitle)
 
 	fmt.Println("Digite o texto da sua nota: ")
 	noteContent, _ = reader.ReadString('\n')
