@@ -31,5 +31,4 @@ func (note Note) DisplayNote() {
 
 	fmt.Println("*****************************************************")
 	fmt.Print(noteDTitle, "\n", noteDContent, "\n", userNcreater, "\n")
-	fmt.Println("*****************************************************")
 }
