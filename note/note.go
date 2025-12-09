@@ -6,6 +6,11 @@ import (
 )
 
 type Note struct {
+	// json tags
+	// serve para setar nomes dos campos para o json
+	// a func Marshal() irá olhar as tags antes de nomear os campos do JSON
+	// `json:"campo"`
+	//
 	User          string    `json:"user"`
 	NoteTitle     string    `json:"note_title"`
 	NoteContent   string    `json:"note_content"`
