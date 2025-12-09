@@ -144,6 +144,8 @@ func _createNote() {
 	var noteTitle string
 	var noteContent string
 
+	// recebe de argumento a souce que iremos loggedUser
+	// no caso abaixo os.Stdin que é o input padrão do usuario na CLI
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("---- CRIAÇÃO DE NOTA ----")
@@ -152,11 +154,21 @@ func _createNote() {
 	fmt.Scan(&noteTitle)
 
 	fmt.Println("Digite o texto da sua nota: ")
+
+	// Aqui você vai atribuir um caracter para ele parar de ler a entrada
+	// no caso abaixo \n
+	// deve-se usar single quotes
+	// ''
 	noteContent, _ = reader.ReadString('\n')
+
+	// P
 	noteContent = strings.TrimSpace(noteContent)
 
 	timestamp := time.Now().Unix()
+
 	noteFileName := fmt.Sprintf("%d_%s.json", timestamp, noteTitle)
+	noteFileName = strings.ReplaceAll(noteFileName, " ", "_")
+	noteFileName = strings.ToLower(noteFileName)
 	notePath := filepath.Join("data", "notes", loggedUser, noteFileName)
 
 	userNote := note.NewNote(loggedUser, noteTitle, noteContent)
