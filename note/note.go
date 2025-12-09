@@ -12,9 +12,9 @@ type Note struct {
 	// `json:"campo"`
 	//
 	User          string    `json:"user"`
-	NoteTitle     string    `json:"note_title"`
-	NoteContent   string    `json:"note_content"`
-	NoteCreatedAt time.Time `json:"note_createdAt"`
+	NoteTitle     string    `json:"title"`
+	NoteContent   string    `json:"content"`
+	NoteCreatedAt time.Time `json:"created_at"`
 }
 
 // Create new Note
