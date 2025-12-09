@@ -7,7 +7,7 @@ import (
 
 // Salva uma string em um arquivo json
 func SaveJSON(filename string, data any) error {
-	jsonData, err := json.MarshalIndent(data, "", " ")
+	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
