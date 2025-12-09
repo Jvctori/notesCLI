@@ -132,7 +132,7 @@ func _userLoggon() {
 		fmt.Println(err)
 	}
 
-	if user.CheckPassword(psw, u.Password) {
+	if user.CheckPassword(u.HashPassword, psw) {
 		fmt.Println("LOGIN FEITO!")
 		__userMenu()
 	} else {

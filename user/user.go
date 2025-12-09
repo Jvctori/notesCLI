@@ -8,9 +8,9 @@ import (
 )
 
 type User struct {
-	Login     string    `json:"user"`
-	Password  string    `json:"hash"`
-	CreatedAt time.Time `json:"created_at"`
+	Login        string    `json:"user"`
+	HashPassword string    `json:"hash"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 // Create new User
@@ -21,9 +21,9 @@ func New(userLogin, userPassword string) User {
 	}
 
 	return User{
-		Login:     userLogin,
-		Password:  psw,
-		CreatedAt: time.Now(),
+		Login:        userLogin,
+		HashPassword: psw,
+		CreatedAt:    time.Now(),
 	}
 }
 
@@ -36,7 +36,7 @@ func HashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func CheckPassword(password, hash string) bool {
+func CheckPassword(hash, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
 }
