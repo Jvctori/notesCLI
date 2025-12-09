@@ -25,9 +25,9 @@ func NewNote(user, nt, nc string) Note {
 }
 
 func (note Note) DisplayNote() {
-	noteDTitle := fmt.Sprintf("Nota: %s", note.NoteTitle)
-	noteDContent := fmt.Sprintf("Conteúdo: %s", note.NoteContent)
-	userNcreater := fmt.Sprintf("Criada por: %s", note.User)
+	noteDTitle := fmt.Sprintf("Nota: %s\n\n", note.NoteTitle)
+	noteDContent := fmt.Sprintf("Conteúdo: %s\n", note.NoteContent)
+	userNcreater := fmt.Sprintf("Criada por: %s\n", note.User)
 
 	fmt.Print(noteDTitle, "\n", noteDContent, "\n", userNcreater, "\n")
 }
