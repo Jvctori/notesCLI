@@ -216,4 +216,5 @@ func _notesViewer() {
 		return
 	}
 	n.DisplayNote()
+	// teste
 }
