@@ -10,7 +10,6 @@ type Note struct {
 	// serve para setar nomes dos campos para o json
 	// a func Marshal() irá olhar as tags antes de nomear os campos do JSON
 	// `json:"campo"`
-	//
 	User          string    `json:"user"`
 	NoteTitle     string    `json:"title"`
 	NoteContent   string    `json:"content"`
