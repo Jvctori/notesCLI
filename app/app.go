@@ -194,9 +194,13 @@ func createNote() {
 
 func filesViewer(dir, dir2 string) {
 	var choice int
-	notesText, notesTextError := "Escolha a nota para visualizar", "Error ao carregar notas:"
-	todoText, todoTextoError := "Suas tarefas:", "Error ao carregar tarefas:"
+
+	notesText := "Choose a note"
+	errorText := "Error"
+	todoText := "Suas tarefas:"
+
 	whichDir := dir2 == "notes"
+
 	filesPath := filepath.Join(dir, dir2, loggedUser)
 	files, err := os.ReadDir(filesPath)
 	if err != nil {
@@ -205,10 +209,10 @@ func filesViewer(dir, dir2 string) {
 
 	listFiles := []string{}
 
-	if dir2 == "todos" {
-		fmt.Println(todoText)
-	} else {
+	if whichDir {
 		fmt.Println(notesText)
+	} else {
+		fmt.Println(todoText)
 	}
 
 	for _, file := range files {
@@ -238,14 +242,14 @@ func filesViewer(dir, dir2 string) {
 	if whichDir {
 		n, err := storage.LoadJSON[note.Note](selectPath)
 		if err != nil {
-			fmt.Println(notesTextError, err)
+			fmt.Println(errorText, err)
 			return
 		}
 		n.Display()
 	} else {
 		n, err := storage.LoadJSON[todo.Todo](selectPath)
 		if err != nil {
-			fmt.Println(todoTextoError, err)
+			fmt.Println(errorText, err)
 			return
 		}
 		n.Display()
