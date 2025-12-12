@@ -1,5 +1,10 @@
 package storage
 
+// todo
+// better validation
+// better error handling
+// bettter var names
+
 import (
 	"encoding/json"
 	"os"

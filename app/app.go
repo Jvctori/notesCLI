@@ -1,5 +1,10 @@
 package app
 
+// todo
+// OPTIMIZE THIS SHIII
+// refactoring
+// better var names
+// better validation
 import (
 	"bufio"
 	"fmt"

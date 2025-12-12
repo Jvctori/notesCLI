@@ -1,5 +1,9 @@
 package todo
 
+// todo
+// add & remove task feature
+// more useful data (priority, dueTime, users?)
+
 import (
 	"fmt"
 	"time"

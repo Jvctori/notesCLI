@@ -1,5 +1,8 @@
 package note
 
+// todo
+// add more features (edit, rm note.Note, tags, users)
+
 import (
 	"fmt"
 	"time"
