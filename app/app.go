@@ -24,16 +24,16 @@ func App() {
 	var choice int
 
 	for {
-		_appHome()
+		appHome()
 		fmt.Print("Escolha: ")
 		fmt.Scan(&choice)
 
 		switch choice {
 		case 1:
-			_userLoggon()
+			userLoggon()
 
 		case 2:
-			_createUser()
+			createUser()
 
 		case 3:
 			fmt.Println("Encerrando aplicativo...")
@@ -44,7 +44,7 @@ func App() {
 	}
 }
 
-func _appHome() {
+func appHome() {
 	fmt.Println("*************************************")
 	fmt.Println("BEM VINDO AO GERADOR DE NOTAS DE JV!")
 	fmt.Println("*************************************")
@@ -54,7 +54,7 @@ func _appHome() {
 	fmt.Println("3. Encerrar aplicativo")
 }
 
-func __userMenu() {
+func userMenu() {
 	var choice int
 	for {
 		fmt.Println("*************************************")
@@ -69,13 +69,13 @@ func __userMenu() {
 
 		switch choice {
 		case 1:
-			_createNote()
+			createNote()
 		case 2:
-			_filesViewer("data", "notes")
+			filesViewer("data", "notes")
 		case 3:
-			_createTodo()
+			createTodo()
 		case 4:
-			_filesViewer("data", "todos")
+			filesViewer("data", "todos")
 		case 5:
 			return
 		default:
@@ -84,7 +84,7 @@ func __userMenu() {
 	}
 }
 
-func _createUser() {
+func createUser() {
 	var login string
 	var password string
 
@@ -131,7 +131,7 @@ func _createUser() {
 	fmt.Println("Usuário cadastrado com sucesso!")
 }
 
-func _userLoggon() {
+func userLoggon() {
 	var psw string
 
 	fmt.Println("Digite seu login:")
@@ -147,17 +147,19 @@ func _userLoggon() {
 
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 
 	if user.CheckPassword(u.HashPassword, psw) {
 		fmt.Println("LOGIN FEITO!")
-		__userMenu()
+		userMenu()
 	} else {
 		fmt.Println("SENHA INCORRETA")
+		return
 	}
 }
 
-func _createNote() {
+func createNote() {
 	var noteTitle string
 	var noteContent string
 
@@ -182,7 +184,7 @@ func _createNote() {
 
 	timestamp := time.Now().Unix()
 
-	noteFileName := fmt.Sprintf("%d_%s.json", timestamp, _sanitizeFilename(noteContent))
+	noteFileName := fmt.Sprintf("%d_%s.json", timestamp, sanitizeFilename(noteTitle))
 	notePath := filepath.Join("data", "notes", loggedUser, noteFileName)
 
 	userNote := note.NewNote(loggedUser, noteTitle, noteContent)
@@ -190,7 +192,7 @@ func _createNote() {
 	storage.SaveJSON(notePath, userNote)
 }
 
-func _filesViewer(dir, dir2 string) {
+func filesViewer(dir, dir2 string) {
 	var choice int
 	notesText, notesTextError := "Escolha a nota para visualizar", "Error ao carregar notas:"
 	todoText, todoTextoError := "Suas tarefas:", "Error ao carregar tarefas:"
@@ -253,7 +255,7 @@ func _filesViewer(dir, dir2 string) {
 	// teste
 }
 
-func _createTodo() {
+func createTodo() {
 	var todoContent string
 	fmt.Println("Digite a tarefa:")
 	reader := bufio.NewReader(os.Stdin)
@@ -261,16 +263,16 @@ func _createTodo() {
 
 	timestamp := time.Now().Unix()
 
-	todoFileName := fmt.Sprintf("%d_%s.json", timestamp, _sanitizeFilename(todoContent))
+	todoFileName := fmt.Sprintf("%d_%s.json", timestamp, sanitizeFilename(todoContent))
 
 	todoPath := filepath.Join("data", "todos", loggedUser, todoFileName)
 
-	userTodo := todo.New(todoContent)
+	userTodo, _ := todo.New(todoContent)
 
 	storage.SaveJSON(todoPath, userTodo)
 }
 
-func _removeAccents(s string) string {
+func removeAccents(s string) string {
 	t := norm.NFD.String(s)
 	result := make([]rune, 0, len(t))
 	for _, r := range t {
@@ -282,9 +284,9 @@ func _removeAccents(s string) string {
 	return string(result)
 }
 
-func _sanitizeFilename(name string) string {
+func sanitizeFilename(name string) string {
 	name = strings.TrimSpace(name)
-	name = _removeAccents(name)
+	name = removeAccents(name)
 
 	// troca espaços por underscore
 	name = strings.ReplaceAll(name, " ", "_")
