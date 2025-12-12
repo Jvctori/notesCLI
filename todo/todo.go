@@ -2,6 +2,10 @@ package todo
 
 import "fmt"
 
+// todo:
+// - timestamp
+// - prazo
+// - lógica para reproduzir a tarefa em um período especificado
 type Todo struct {
 	Text string `json:"text"`
 }
