@@ -5,12 +5,16 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
+	"unicode"
 
 	"example.com/StructProject/note"
 	"example.com/StructProject/storage"
+	"example.com/StructProject/todo"
 	"example.com/StructProject/user"
+	"golang.org/x/text/unicode/norm"
 )
 
 var loggedUser string
@@ -57,18 +61,22 @@ func __userMenu() {
 		fmt.Printf("Usuário: %s\n", loggedUser)
 		fmt.Println("1. Criar nota")
 		fmt.Println("2. Ver notas")
-		fmt.Println("3. Logout")
-		fmt.Println("Escolhar: ")
+		fmt.Println("3. Criar tarefa")
+		fmt.Println("4. Ver tarefas")
+		fmt.Println("5. Logout")
+		fmt.Println("Escolha: ")
 		fmt.Scan(&choice)
 
 		switch choice {
 		case 1:
 			_createNote()
 		case 2:
-			_notesViewer()
+			_filesViewer("data", "notes")
 		case 3:
-			fmt.Println("LOGOUT REALIZADO!")
-			loggedUser = ""
+			_createTodo()
+		case 4:
+			_filesViewer("data", "todos")
+		case 5:
 			return
 		default:
 			fmt.Println("Opção inválida")
@@ -87,15 +95,24 @@ func _createUser() {
 	fmt.Scan(&password)
 
 	u := user.New(login, password)
+
 	if err := os.MkdirAll(filepath.Join("data", "users"), 0o755); err != nil {
 		fmt.Println("Erro:", err)
 		return
 	}
+
 	userNotesDir := filepath.Join("data", "notes", login)
 	if err := os.MkdirAll(userNotesDir, 0o755); err != nil {
 		fmt.Println("Error", err)
 		return
 	}
+
+	userTodoDir := filepath.Join("data", "todos", login)
+	if err := os.MkdirAll(userTodoDir, 0o755); err != nil {
+		fmt.Println("Error", err)
+		return
+	}
+
 	uJson := filepath.Join("data", "users", login+".json")
 
 	if _, err := os.Stat(uJson); err == nil {
@@ -162,13 +179,10 @@ func _createNote() {
 	noteContent, _ = reader.ReadString('\n')
 
 	// P
-	noteContent = strings.TrimSpace(noteContent)
 
 	timestamp := time.Now().Unix()
 
-	noteFileName := fmt.Sprintf("%d_%s.json", timestamp, noteTitle)
-	noteFileName = strings.ReplaceAll(noteFileName, " ", "_")
-	noteFileName = strings.ToLower(noteFileName)
+	noteFileName := fmt.Sprintf("%d_%s.json", timestamp, _sanitizeFilename(noteContent))
 	notePath := filepath.Join("data", "notes", loggedUser, noteFileName)
 
 	userNote := note.NewNote(loggedUser, noteTitle, noteContent)
@@ -176,31 +190,40 @@ func _createNote() {
 	storage.SaveJSON(notePath, userNote)
 }
 
-func _notesViewer() {
+func _filesViewer(dir, dir2 string) {
 	var choice int
-	notesPath := filepath.Join("data", "notes", loggedUser)
-	files, err := os.ReadDir(notesPath)
+	notesText, notesTextError := "Escolha a nota para visualizar", "Error ao carregar notas:"
+	todoText, todoTextoError := "Suas tarefas:", "Error ao carregar tarefas:"
+	whichDir := dir2 == "notes"
+	filesPath := filepath.Join(dir, dir2, loggedUser)
+	files, err := os.ReadDir(filesPath)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
 
 	listFiles := []string{}
-	fmt.Println("Escolha a nota a visualizar:")
+
+	if dir2 == "todos" {
+		fmt.Println(todoText)
+	} else {
+		fmt.Println(notesText)
+	}
 
 	for _, file := range files {
 		if file.IsDir() || filepath.Ext(file.Name()) != ".json" {
 			continue
 		}
 
-		path := filepath.Join(notesPath, file.Name())
+		path := filepath.Join(filesPath, file.Name())
 		listFiles = append(listFiles, path)
 		index := len(listFiles)
 		fmt.Printf("[%d] %s\n", index, file.Name())
 	}
 	if len(listFiles) == 0 {
-		fmt.Println("O usuário não possui notas")
+		fmt.Println("O usuário não possui arquivos")
 		return
 	}
+
 	fmt.Println("Digite sua escolha: ")
 	fmt.Scan(&choice)
 	choice--
@@ -210,11 +233,66 @@ func _notesViewer() {
 	}
 	selectPath := listFiles[choice]
 
-	n, err := storage.LoadJSON[note.Note](selectPath)
-	if err != nil {
-		fmt.Println("Erro ao carregar nota:", err)
-		return
+	if whichDir {
+		n, err := storage.LoadJSON[note.Note](selectPath)
+		if err != nil {
+			fmt.Println(notesTextError, err)
+			return
+		}
+		n.Display()
+	} else {
+		n, err := storage.LoadJSON[todo.Todo](selectPath)
+		if err != nil {
+			fmt.Println(todoTextoError, err)
+			return
+		}
+		n.Display()
+
 	}
-	n.DisplayNote()
+
 	// teste
+}
+
+func _createTodo() {
+	var todoContent string
+	fmt.Println("Digite a tarefa:")
+	reader := bufio.NewReader(os.Stdin)
+	todoContent, _ = reader.ReadString('\n')
+
+	timestamp := time.Now().Unix()
+
+	todoFileName := fmt.Sprintf("%d_%s.json", timestamp, _sanitizeFilename(todoContent))
+
+	todoPath := filepath.Join("data", "todos", loggedUser, todoFileName)
+
+	userTodo := todo.New(todoContent)
+
+	storage.SaveJSON(todoPath, userTodo)
+}
+
+func _removeAccents(s string) string {
+	t := norm.NFD.String(s)
+	result := make([]rune, 0, len(t))
+	for _, r := range t {
+		if unicode.Is(unicode.Mn, r) { // Mn = Mark Nonspacing (acentos)
+			continue
+		}
+		result = append(result, r)
+	}
+	return string(result)
+}
+
+func _sanitizeFilename(name string) string {
+	name = strings.TrimSpace(name)
+	name = _removeAccents(name)
+
+	// troca espaços por underscore
+	name = strings.ReplaceAll(name, " ", "_")
+
+	// remove qualquer caractere que não seja letra, número, hífen ou underscore
+	re := regexp.MustCompile(`[^a-zA-Z0-9._-]+`)
+	name = re.ReplaceAllString(name, "")
+
+	name = strings.ToLower(name)
+	return name
 }
