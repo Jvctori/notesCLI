@@ -1,5 +1,8 @@
 package user
 
+// todo
+// edit login and password, rm user
+
 import (
 	"fmt"
 	"time"
